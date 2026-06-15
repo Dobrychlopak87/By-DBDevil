@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0f172a;
+  --color-primary-foreground: #f8fafc;
+  --color-accent: #3b82f6;
+}
+
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
+
+html.dark {
+  color-scheme: dark;
+}
