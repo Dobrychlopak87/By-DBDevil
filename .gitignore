@@ -1,8 +1,27 @@
-node_modules/
-build/
-dist/
-coverage/
-.DS_Store
-*.log
-.env*
+# Secrets and local configuration
+.env
+.env.*
 !.env.example
+.private/
+config/config.php
+includes/config.php
+
+# Runtime data and user content
+session/
+assets/uploads/*
+!assets/uploads/.htaccess
+assets/uploads/thumbs/
+assets/uploads/category-icons/
+chatroom/uploads/*
+!chatroom/uploads/.htaccess
+logs/
+cache/
+
+# Local/editor/system files
+.DS_Store
+.idea/
+.vscode/
+
+# Build and dependency output
+dist/
+node_modules/
