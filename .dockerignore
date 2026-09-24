@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+.private/
+session/
+*.sql
+*.zip
+*.log
+backups/
+work/
+docs/
+tools/
+.git/
+chatroom/uploads/*
+assets/uploads/*

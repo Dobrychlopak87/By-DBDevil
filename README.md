@@ -1,20 +1,29 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# 66600.PL — release candidate Etapu 6
 
-# Run and deploy your AI Studio app
+Ta paczka jest kandydatem release przygotowanym na podstawie stagingu. Zawiera kod aplikacji, lokalne zasoby statyczne, przykładowe konfiguracje, czysty schemat i konfigurację Docker. Nie zawiera sekretów, sesji, uploadów użytkowników, logów, backupów, dumpów produkcyjnych ani danych użytkowników.
 
-This contains everything you need to run your app locally.
+## Status
 
-View your app in AI Studio: https://ai.studio/apps/4f150440-05f3-4e4c-9247-531f546c6a9c
+Paczka nie jest jeszcze zatwierdzona do przełączenia produkcji. Przed wdrożeniem muszą zostać wykonane i zaakceptowane Etapy 7–9 oraz testy smoke/regresji. W szczególności nie istnieje jeszcze finalny browser installer/importer opisany w planie.
 
-## Run Locally
+## Integralność
 
-**Prerequisites:**  Node.js
+`SHA256SUMS.txt` zawiera sumy wszystkich plików paczki. `PACKAGE-MANIFEST.tsv` zawiera listę i rozmiary plików. Nie zmieniaj plików po wygenerowaniu sum bez ponownej generacji manifestu.
 
+## Zasada wdrożenia
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Najpierw wdrażaj do osobnego katalogu FTP na nazwa.pl. Nie nadpisuj bieżącego katalogu produkcyjnego. Przełączenie jest dozwolone dopiero po pozytywnym smoke teście, drugiej kopii backupowej i potwierdzeniu rollbacku.
+
+Zobacz `DEPLOYMENT-RUNBOOK.md`, `RELEASE-CHECKLIST.md` i `ROLLBACK-CHECKLIST.md`.
+
+## GitHub Codespaces
+
+Aby uruchomić środowisko developerskie, otwórz gałąź `installer-66600` w GitHubie i wybierz **Code → Codespaces → Create codespace on installer-66600**. Repozytorium użyje konfiguracji `.devcontainer/`, uruchomi PHP/Apache oraz MariaDB i przekieruje port aplikacji `8080`.
+
+Codespaces korzysta wyłącznie z testowej bazy i developerskich wartości środowiskowych z `.devcontainer/docker-compose.codespaces.yml`. Nie używa produkcyjnego pliku `.env` ani produkcyjnej bazy danych.
+
+Po uruchomieniu migracje można wykonać w terminalu Codespace:
+
+```bash
+php database/migrate.php
+```

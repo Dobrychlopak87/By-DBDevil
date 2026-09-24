@@ -1,0 +1,3 @@
+# Blokada katalogu stagingowego do czasu instalacji.
+# Aby uruchomic instalator, USUN ten plik przez FTP.
+Require all denied
