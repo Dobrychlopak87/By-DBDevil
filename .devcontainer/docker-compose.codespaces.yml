@@ -1,0 +1,29 @@
+services:
+  app:
+    env_file: []
+    environment:
+      APP_ENV: development
+      SITE_URL: http://localhost:8080
+      CANONICAL_HOST: localhost
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: app
+      DB_USER: app
+      DB_PASSWORD: codespace-app-password
+      DB_ROOT_PASSWORD: codespace-root-password
+      CHAT_DB_DSN: mysql:host=db;port=3306;dbname=app;charset=utf8mb4
+      CHAT_DB_USER: app
+      CHAT_DB_PASSWORD: codespace-app-password
+      PULSE_RATE_HASH_SECRET: codespace-development-secret-32-characters
+      CONTACT_EMAIL: admin@example.com
+      SESSION_COOKIE_SECURE: "0"
+      SESSION_COOKIE_PATH: /
+    ports:
+      - "8080:80"
+
+  db:
+    environment:
+      MARIADB_DATABASE: app
+      MARIADB_USER: app
+      MARIADB_PASSWORD: codespace-app-password
+      MARIADB_ROOT_PASSWORD: codespace-root-password

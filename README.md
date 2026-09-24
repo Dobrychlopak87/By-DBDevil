@@ -15,3 +15,15 @@ Paczka nie jest jeszcze zatwierdzona do przełączenia produkcji. Przed wdrożen
 Najpierw wdrażaj do osobnego katalogu FTP na nazwa.pl. Nie nadpisuj bieżącego katalogu produkcyjnego. Przełączenie jest dozwolone dopiero po pozytywnym smoke teście, drugiej kopii backupowej i potwierdzeniu rollbacku.
 
 Zobacz `DEPLOYMENT-RUNBOOK.md`, `RELEASE-CHECKLIST.md` i `ROLLBACK-CHECKLIST.md`.
+
+## GitHub Codespaces
+
+Aby uruchomić środowisko developerskie, otwórz gałąź `installer-66600` w GitHubie i wybierz **Code → Codespaces → Create codespace on installer-66600**. Repozytorium użyje konfiguracji `.devcontainer/`, uruchomi PHP/Apache oraz MariaDB i przekieruje port aplikacji `8080`.
+
+Codespaces korzysta wyłącznie z testowej bazy i developerskich wartości środowiskowych z `.devcontainer/docker-compose.codespaces.yml`. Nie używa produkcyjnego pliku `.env` ani produkcyjnej bazy danych.
+
+Po uruchomieniu migracje można wykonać w terminalu Codespace:
+
+```bash
+php database/migrate.php
+```

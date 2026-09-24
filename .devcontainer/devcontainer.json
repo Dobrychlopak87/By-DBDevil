@@ -1,0 +1,26 @@
+{
+  "name": "66600.PL Development",
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "docker-compose.codespaces.yml"
+  ],
+  "service": "app",
+  "workspaceFolder": "/var/www/html",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [80],
+  "portsAttributes": {
+    "80": {
+      "label": "66600.PL",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "xdebug.php-debug"
+      ]
+    }
+  },
+  "remoteUser": "root"
+}
