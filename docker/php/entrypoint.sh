@@ -13,6 +13,10 @@ set -eu
 
 private_dir=/var/www/private
 mkdir -p "$private_dir"
+mkdir -p /var/lib/66600/session /var/lib/66600/cache \
+    /var/www/html/assets/uploads /var/www/html/chatroom/uploads
+chown -R www-data:www-data /var/lib/66600 \
+    /var/www/html/assets/uploads /var/www/html/chatroom/uploads
 cat > "$private_dir/66-600-security-config.php" <<PHP
 <?php
 return [
