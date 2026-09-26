@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; connect-src 'none'; img-src data:; font-src data:">
+<title>Puls miasta</title>
+<style>
+:root{--bg:#f8e1cc;--ink:#4d6578;--accent:#994116;--accent-ink:#65442f;--line:rgba(101,68,47,.42);--edge:rgba(248,225,204,.9)}
+:root[data-theme="dark"]{--bg:#123d42;--ink:#eefafa;--accent:#b6f2e8;--accent-ink:#efffff;--line:rgba(210,255,248,.55);--edge:rgba(18,61,66,.9)}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:transparent;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#ticker{height:100%;display:flex;align-items:stretch;overflow:hidden;background:var(--bg);border:0;box-shadow:none}
+#add{position:relative;z-index:2;flex:0 0 4.15rem;border:0;background:transparent;color:var(--accent-ink);font:300 2.55rem/.8 Inter,system-ui,sans-serif;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#add::after{content:"";position:absolute;right:0;top:10%;bottom:10%;width:1px;background:linear-gradient(to bottom,transparent,var(--line) 20%,var(--accent-ink) 50%,var(--line) 80%,transparent);box-shadow:0 0 6px rgba(153,65,22,.38);box-shadow:0 0 6px color-mix(in srgb,var(--accent) 80%,transparent)}
+#add span{display:block;transform-origin:center;animation:pulsePlus 6.8s cubic-bezier(.36,.02,.22,1) infinite}
+@keyframes pulsePlus{0%,6%{transform:scale(1) rotate(0)}15%{transform:scale(1.62) rotate(0)}27%{transform:scale(1) rotate(0)}44%{transform:scale(1) rotate(-360deg)}100%{transform:scale(1) rotate(-360deg)}}
+#stream{position:relative;z-index:1;isolation:isolate;flex:1;min-width:0;overflow:hidden;border:0;padding:0;background:transparent;color:var(--ink);text-align:left;cursor:pointer;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+#stream::before,#stream::after{content:"";position:absolute;z-index:2;top:0;bottom:0;width:2.15rem;pointer-events:none}#stream::before{left:0;background:linear-gradient(to right,var(--bg) 0%,var(--edge) 40%,transparent 100%);background:linear-gradient(to right,var(--bg) 0%,color-mix(in srgb,var(--bg) 90%,transparent) 40%,transparent 100%)}#stream::after{right:0;background:linear-gradient(to left,var(--bg) 0%,var(--edge) 40%,transparent 100%);background:linear-gradient(to left,var(--bg) 0%,color-mix(in srgb,var(--bg) 90%,transparent) 40%,transparent 100%)}
+#track{display:inline-flex;align-items:center;min-width:max-content;height:100%;padding-inline:2.5rem;white-space:nowrap;will-change:transform;animation:marquee var(--marquee-duration,2s) linear infinite}
+#track.manual{animation:none;cursor:grabbing}
+@keyframes marquee{from{transform:translate3d(3.5rem,0,0)}to{transform:translate3d(calc(-50% + 3.5rem),0,0)}}
+.item{display:inline-flex;align-items:center;gap:.25rem;padding:0 1.35rem;font-size:.93rem;font-weight:450;letter-spacing:.002em;animation:pulseItemRead 12s ease-in-out infinite}.item strong{color:var(--accent);font-weight:780}.item .title{font-weight:800}.item time{margin-right:.42rem;font-size:.76em;font-weight:600;color:var(--ink);color:color-mix(in srgb,var(--ink) 70%,transparent);transform:translateY(-.18em)}.separator{color:var(--accent);font-size:.72rem}@keyframes pulseItemRead{0%,100%{opacity:.72;transform:scale(.92)}20%,78%{opacity:1;transform:scale(1)}}
+#add:focus-visible,#stream:focus-visible{outline:2px solid var(--accent-ink);outline-offset:-3px}
+@media (prefers-reduced-motion:reduce){#add span{animation-duration:10s!important}.item{animation-duration:16s!important}}
+</style>
+</head>
+<body>
+<div id="ticker" role="group" aria-label="Puls miasta">
+<button id="add" type="button" aria-label="Dodaj komunikat Pulsu miasta"><span aria-hidden="true">+</span></button>
+<button id="stream" type="button" aria-label="Zobacz Puls miasta"><span id="track"></span></button>
+</div>
+<script>
+(() => {
+ const origin=location.origin,track=document.getElementById('track'),stream=document.getElementById('stream'),add=document.getElementById('add');
+ const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+ const normalSpeed=160,reducedSpeed=84;
+ let items=[{kind:'pulse'}],drag=null,resumeTimer=0,suppressClickUntil=0;
+ const label=(v)=>typeof v==='string'?v:'';
+ function append(fragment,item){const entry=document.createElement('span');entry.className='item';if(item&&item.kind==='notice'){if(label(item.time)){const t=document.createElement('time');t.textContent=label(item.time);entry.append(t)}entry.append(document.createTextNode(label(item.label)));const details=[label(item.signature),label(item.phone)].filter(Boolean);if(details.length)entry.append(document.createTextNode(' — '+details.join(' · ')))}else{const title=document.createElement('span');title.className='title';title.textContent='Puls miasta';entry.append(title,document.createTextNode(' : Pilne, bez reklam.'))}const sep=document.createElement('span');sep.className='separator';sep.setAttribute('aria-hidden','true');sep.textContent='◆';fragment.append(entry,sep)}
+ function setMarqueeDuration(){const distance=track.scrollWidth/2;const speed=reduceMotion.matches?reducedSpeed:normalSpeed;const minimum=reduceMotion.matches?3.2:1.6;track.style.setProperty('--marquee-duration',Math.max(minimum,distance/speed).toFixed(2)+'s')}
+ function restart(){track.classList.remove('manual');track.style.removeProperty('transform');track.style.animation='none';void track.offsetWidth;track.style.removeProperty('animation')}
+ function render(){const f=document.createDocumentFragment();for(let copy=0;copy<2;copy+=1)items.forEach((i)=>append(f,i));track.replaceChildren(f);setMarqueeDuration();restart()}
+ function send(type){parent.postMessage({source:'pulse-ticker',type},origin)}
+ add.addEventListener('click',(e)=>{e.preventDefault();send('open')});
+ stream.addEventListener('click',(e)=>{if(Date.now()<suppressClickUntil){e.preventDefault();return}send('list')});
+ stream.addEventListener('pointerdown',(e)=>{if(e.button>0)return;const matrix=getComputedStyle(track).transform;let offset=0;if(matrix&&matrix!=='none'){const m=matrix.match(/matrix(?:3d)?\(([^)]+)\)/);if(m){const n=m[1].split(',').map(Number);offset=m[0].startsWith('matrix3d')?n[12]:n[4]}}drag={id:e.pointerId,x:e.clientX,y:e.clientY,offset,horizontal:false};track.classList.add('manual');track.style.transform='translate3d('+offset+'px,0,0)'});
+ stream.addEventListener('pointermove',(e)=>{if(!drag||e.pointerId!==drag.id)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(!drag.horizontal&&Math.max(Math.abs(dx),Math.abs(dy))>8){if(Math.abs(dx)<=Math.abs(dy)){drag=null;restart();return}drag.horizontal=true;stream.setPointerCapture?.(e.pointerId)}if(!drag.horizontal)return;e.preventDefault();track.style.transform='translate3d('+(drag.offset+dx)+'px,0,0)'},{passive:false});
+ function finish(e){if(!drag||e.pointerId!==drag.id)return;const moved=drag.horizontal;drag=null;if(!moved){restart();return}suppressClickUntil=Date.now()+450;clearTimeout(resumeTimer);resumeTimer=setTimeout(restart,3000)}
+ stream.addEventListener('pointerup',finish);stream.addEventListener('pointercancel',finish);
+ reduceMotion.addEventListener?.('change',()=>{setMarqueeDuration();restart()});
+ window.addEventListener('message',(e)=>{if(e.origin!==origin||!e.data||e.data.source!=='pulse-parent')return;if(e.data.type==='items'&&Array.isArray(e.data.items)&&e.data.items.length){items=e.data.items;render()}if(e.data.type==='theme'&&(e.data.theme==='light'||e.data.theme==='dark'))document.documentElement.dataset.theme=e.data.theme;if(e.data.type==='restart')restart()});
+ render();parent.postMessage({source:'pulse-ticker',type:'ready'},origin);
+})();
+</script>
+</body>
+</html>

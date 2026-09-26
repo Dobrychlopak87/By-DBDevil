@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">66600.PL — Jesteś u siebie</title>
+  <desc id="description">Statyczna grafika zastępcza sekcji hero portalu 66600.pl.</desc>
+  <defs>
+    <linearGradient id="lightBackground" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e9f2f7"/>
+      <stop offset="0.54" stop-color="#f8e1cc"/>
+      <stop offset="1" stop-color="#d8e8f0"/>
+    </linearGradient>
+    <linearGradient id="darkBackground" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#082a35"/>
+      <stop offset="0.55" stop-color="#123d42"/>
+      <stop offset="1" stop-color="#071a25"/>
+    </linearGradient>
+    <linearGradient id="lightAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d97a59"/>
+      <stop offset="1" stop-color="#f0ae87"/>
+    </linearGradient>
+    <linearGradient id="darkAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#73d4c4"/>
+      <stop offset="1" stop-color="#b2f1e6"/>
+    </linearGradient>
+    <style>
+      .bg-dark, .accent-dark { display:none; }
+      .bg-light, .accent-light { display:block; }
+      @media (prefers-color-scheme: dark) {
+        .bg-dark, .accent-dark { display:block; }
+        .bg-light, .accent-light { display:none; }
+      }
+    </style>
+  </defs>
+  <rect class="bg-light" width="1600" height="900" fill="url(#lightBackground)"/>
+  <rect class="bg-dark" width="1600" height="900" fill="url(#darkBackground)"/>
+  <g fill="none" opacity="0.26" stroke-width="4">
+    <path d="M-50 736 C250 588, 400 830, 648 676 S1070 410, 1660 716" class="accent-light" stroke="#cb7354"/>
+    <path d="M-50 736 C250 588, 400 830, 648 676 S1070 410, 1660 716" class="accent-dark" stroke="#89e5d7"/>
+    <path d="M-10 785 C268 645, 502 862, 790 685 S1230 468, 1640 738" class="accent-light" stroke="#447183"/>
+    <path d="M-10 785 C268 645, 502 862, 790 685 S1230 468, 1640 738" class="accent-dark" stroke="#5fb8b0"/>
+  </g>
+  <rect x="94" y="98" width="14" height="704" rx="7" class="accent-light" fill="url(#lightAccent)"/>
+  <rect x="94" y="98" width="14" height="704" rx="7" class="accent-dark" fill="url(#darkAccent)"/>
+  <g transform="translate(270 278)" opacity="0.9">
+    <rect width="236" height="236" rx="44" class="accent-light" fill="#fffaf5"/>
+    <rect width="236" height="236" rx="44" class="accent-dark" fill="#164852"/>
+    <path d="M38 119h46l25-47 39 104 29-57h22" fill="none" class="accent-light" stroke="#d97a59" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+    <path d="M38 119h46l25-47 39 104 29-57h22" fill="none" class="accent-dark" stroke="#a4eee2" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+  </g>
+  <g transform="translate(560 278)" opacity="0.72">
+    <circle cx="118" cy="118" r="118" class="accent-light" fill="#f6cfb4"/>
+    <circle cx="118" cy="118" r="118" class="accent-dark" fill="#1c5b61"/>
+    <path d="M72 84h92M72 118h92M72 152h56" fill="none" class="accent-light" stroke="#315567" stroke-linecap="round" stroke-width="15"/>
+    <path d="M72 84h92M72 118h92M72 152h56" fill="none" class="accent-dark" stroke="#dffaf4" stroke-linecap="round" stroke-width="15"/>
+  </g>
+  <g transform="translate(850 278)" opacity="0.78">
+    <rect width="236" height="236" rx="44" class="accent-light" fill="#dbeaf0"/>
+    <rect width="236" height="236" rx="44" class="accent-dark" fill="#0f3542"/>
+    <path d="M62 84h112v83H111l-33 31v-31H62z" fill="none" class="accent-light" stroke="#426d80" stroke-linejoin="round" stroke-width="15"/>
+    <path d="M62 84h112v83H111l-33 31v-31H62z" fill="none" class="accent-dark" stroke="#b9eee5" stroke-linejoin="round" stroke-width="15"/>
+  </g>
+</svg>

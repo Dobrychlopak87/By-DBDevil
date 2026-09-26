@@ -1,0 +1,42 @@
+# Ochrona katalogu uploadów. Plik jest częścią paczki release i musi być
+# wysyłany razem z katalogiem assets/uploads/ (oraz thumbs/, category-icons/).
+Options -Indexes -ExecCGI
+
+<IfModule mod_authz_core.c>
+    # Pliki skryptowe i konfiguracyjne są zawsze odrzucane.
+    <FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8|phar|pl|py|cgi|sh|bash|shtml|htaccess|htpasswd|htgroup|ini|conf)$">
+        Require all denied
+    </FilesMatch>
+    # Podwójne rozszerzenia, np. shell.php.jpg albo shell.jpg.php.
+    <FilesMatch "\.(php|phtml|php[0-9]|phar|pl|py|cgi|sh|shtml)(\.|$)">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8|phar|pl|py|cgi|sh|bash|shtml|htaccess|htpasswd|htgroup|ini|conf)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+    <FilesMatch "\.(php|phtml|php[0-9]|phar|pl|py|cgi|sh|shtml)(\.|$)">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+
+# Usuń dziedziczone handlery i typy, aby żaden plik nie został wykonany
+# jako skrypt nawet przy AddHandler/AddType z wyższego poziomu.
+<IfModule mod_mime.c>
+    RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .pl .py .cgi .sh .shtml
+    RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .phar
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# SVG z uploadów traktuj jak izolowany obraz bez skryptów i kontekstu strony.
+<FilesMatch "\.svg$">
+    <IfModule mod_headers.c>
+        Header always set Content-Security-Policy "sandbox"
+    </IfModule>
+</FilesMatch>

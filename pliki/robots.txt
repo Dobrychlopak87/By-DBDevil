@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /database.sql
+
+# Ten plik jest nadpisywany przez robots.php przez .htaccess
+# (RewriteRule ^robots\.txt$ robots.php [L]).
+# Jeśli mod_rewrite nie jest dostępny, sitemap zostanie podany jako
+# https://<host>/sitemap.xml — upewnij się, że jest dostępny.
+Sitemap: /sitemap.xml

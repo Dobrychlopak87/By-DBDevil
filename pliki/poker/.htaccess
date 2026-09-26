@@ -1,0 +1,43 @@
+# Poker Polski — podstawowe zabezpieczenia (Apache 2.2 / 2.4 / LiteSpeed).
+# Wszystkie reguły są opcjonalne: jeśli moduł nie jest dostępny, zostaną pominięte.
+
+Options -Indexes
+DirectoryIndex index.php index.html
+
+# Izolacja od katalogu nadrzędnego: własny silnik przepisywania bez dziedziczenia
+# reguł (przekierowań / "front controllera") strony w katalogu wyżej.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+</IfModule>
+
+# Blokada bezpośredniego dostępu do plików konfiguracyjnych i dokumentacji.
+<FilesMatch "^(config\.php|bootstrap\.php|README\.md|\.htaccess)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Poprawne kodowanie i typy plików statycznych.
+AddDefaultCharset UTF-8
+<IfModule mod_mime.c>
+  AddType text/css .css
+  AddType application/javascript .js
+  AddCharset UTF-8 .css .js .md
+</IfModule>
+
+# Pliki CSS/JS mają numer wersji w adresie, więc mogą być buforowane.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+</IfModule>

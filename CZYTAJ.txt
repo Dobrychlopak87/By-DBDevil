@@ -1,0 +1,44 @@
+KOPIA SERWISU 66600.PL: pliki i bazy danych
+Data wykonania: 26.09.2026
+
+PODZIAŁ NA DWA ARCHIWA (ze względu na rozmiar)
+  Kopia-66600pl-2026-09-26-czesc1.zip  wszystko oprócz pliku pdf.pdf
+  Kopia-66600pl-2026-09-26-czesc2.zip  tylko pliki/pdf.pdf (98 MB)
+  Rozpakuj oba archiwa w tym samym miejscu, a otrzymasz komplet.
+
+ZAWARTOŚĆ
+  pliki/   pełna zawartość konta FTP (katalog główny strony), razem z:
+           /poker, /chatroom, /admin, /assets (w tym uploads), /PDF, pdf.pdf,
+           /staging-66600-20260923, /.private (konfiguracja z hasłami do bazy),
+           /session, plikami .htaccess i wszystkimi pozostałymi plikami.
+  bazy/    zrzuty SQL obu baz (struktura i dane):
+           server629599_site66main.sql   baza serwisu (także czat i menu)
+           server629599_poker.sql        baza gry w pokera
+           server629599_site66main.kompatybilny-starsza-mariadb.sql
+               ta sama baza, ale klucze obce mają unikalne nazwy. Użyj jej
+               tylko na MariaDB starszej niż 12, jeśli import oryginału zwróci
+               błąd "errno: 121". Na obecnym serwerze (MariaDB 12.3) wgrywaj
+               oryginał.
+           SHA256SUMS.txt                sumy kontrolne zrzutów
+  pliki-lista.tsv  lista wszystkich plików z rozmiarami
+
+CELOWO POMINIĘTE (zgodnie z poleceniem)
+  16-09.zip                                 archiwum kopii
+  backup-66600pl-2026-09-17.zip             archiwum kopii
+  backup-66600-przed-wdrozeniem-20260923/   katalog kopii
+  mapy.zip                                  archiwum map
+
+ODTWARZANIE
+  1. Wgraj zawartość katalogu pliki/ przez FTP do katalogu głównego konta.
+  2. Bazy wgraj np. przez phpMyAdmin (Import) albo z konsoli:
+       mysql -h HOST -u UŻYTKOWNIK -p < bazy/server629599_site66main.sql
+       mysql -h HOST -u UŻYTKOWNIK -p < bazy/server629599_poker.sql
+     Zrzuty zawierają CREATE DATABASE/USE z oryginalnymi nazwami baz. Jeśli
+     nowa baza ma inną nazwę, usuń te linie z początku pliku i wybierz bazę
+     ręcznie.
+  3. Jeśli zmienią się dane dostępowe do bazy, popraw:
+       .private/66-600-security-config.php   (serwis i czat)
+       poker/config.php                      (poker)
+
+UWAGA: archiwum zawiera hasła (w .private i poker/config.php). Przechowuj je
+w bezpiecznym miejscu i nie wgrywaj go jako pliku do publicznego katalogu strony.

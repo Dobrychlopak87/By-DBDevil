@@ -1,0 +1,12 @@
+# Zdjęcia chatroomu są serwowane wyłącznie przez chatroom/api/image.php
+# (autoryzacja, wygasanie po 24 h). Bezpośredni dostęp HTTP do katalogu
+# jest całkowicie zablokowany.
+Options -Indexes
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

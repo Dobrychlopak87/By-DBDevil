@@ -1,0 +1,36 @@
+# Katalog ikon SVG kategorii. Ikony są serwowane wyłącznie jako obrazy.
+Options -Indexes -ExecCGI
+
+<IfModule mod_mime.c>
+    AddType image/svg+xml .svg
+</IfModule>
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8|phar|pl|py|cgi|sh|bash|shtml|htaccess|htpasswd|htgroup|ini|conf)$">
+        Require all denied
+    </FilesMatch>
+    <FilesMatch "\.(php|phtml|php[0-9]|phar|pl|py|cgi|sh|shtml)(\.|$)">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8|phar|pl|py|cgi|sh|bash|shtml|htaccess|htpasswd|htgroup|ini|conf)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+    <FilesMatch "\.(php|phtml|php[0-9]|phar|pl|py|cgi|sh|shtml)(\.|$)">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_mime.c>
+    RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .pl .py .cgi .sh .shtml
+    RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .phar
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    # Izolacja SVG: bez skryptów, ramek i nawigacji.
+    Header always set Content-Security-Policy "sandbox"
+</IfModule>

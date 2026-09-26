@@ -1,0 +1,119 @@
+SetEnv SITE_URL "https://66600.pl"
+SetEnv CANONICAL_HOST "66600.pl"
+# Konfiguracja Apache dla 66600.PL.
+# Plik jest przenośny — nie wymaga twardo wbitej domeny ani katalogu.
+# Opcjonalnie administrator może ustawić kanoniczny adres instalacji przez SetEnv:
+#   SetEnv SITE_URL "https://example.com"
+#   SetEnv CANONICAL_HOST "example.com"
+
+# Nie ujawniaj struktury katalogów, gdy brakuje pliku indeksowego.
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-src 'self'; worker-src 'self'; manifest-src 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Opcjonalna kanonizacja hosta.
+    # Wymaga wcześniejszego zdefiniowania: SetEnv CANONICAL_HOST "example.com"
+    # Powoduje przekierowanie 301 wszystkich żądań przychodzących na inny host
+    # (w tym wariantu "www.") na wersję kanoniczną, z zachowaniem ścieżki i zapytania.
+    RewriteCond %{ENV:CANONICAL_HOST} !^$
+    RewriteCond %{HTTP_HOST} !^66600\.pl$ [NC]
+    RewriteRule ^ https://%{ENV:CANONICAL_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Wymuszenie HTTPS, gdy serwer już przyjął żądanie po HTTP i jest dostępny
+    # certyfikat. Warunek pomijany, jeśli CANONICAL_HOST nie jest skonfigurowany
+    # (instalacja developerska/bez domeny też powinna działać po http).
+    RewriteCond %{ENV:CANONICAL_HOST} !^$
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+    RewriteRule ^ https://%{ENV:CANONICAL_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Standardowy adres dynamicznej mapy witryny.
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+    # robots.txt jest generowany dynamicznie (uwzględnia bieżący host).
+    RewriteRule ^robots\.txt$ robots.php [L]
+
+    # Przeglądarki często żądają klasycznego favicon.ico bez względu na linki w HTML.
+    RewriteRule ^favicon\.ico$ assets/images/icons/favicon.ico [L]
+
+    # Dostępność / kompatybilność: przeglądarki bez obsługi AVIF
+    # (Safari <= 15, iOS <= 15) dostają wygenerowany wariant JPEG.
+    RewriteCond %{HTTP_ACCEPT} !image/avif [NC]
+    RewriteCond %{REQUEST_URI} ^/(.+)\.avif$ [NC]
+    RewriteCond %{DOCUMENT_ROOT}/%1.jpg -f
+    RewriteRule ^(.+)\.avif$ /%1.jpg [T=image/jpeg,L]
+
+    RewriteCond %{THE_REQUEST} \s/+post\.php\?slug=([A-Za-z0-9-]+) [NC]
+    RewriteRule ^post\.php$ /kronika/%1? [R=301,L,NE]
+    RewriteRule ^kronika/([a-z0-9-]+)/?$ post.php?slug=$1 [QSA,L,NC]
+
+    # Obsługa pliku nieistniejącego -> index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+    # PWA - Cache Control
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|webp|ico|svg|avif|woff|woff2|ttf|eot)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # Pliki .avif moga byc serwowane jako JPEG (negocjacja tresci)
+    # — pamieci podreczne musza uwzgledniac naglowek Accept.
+    <FilesMatch "\.avif$">
+        Header append Vary Accept
+    </FilesMatch>
+
+    # Manifest.json - no cache
+    <Files "manifest.json">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </Files>
+
+    # Service Worker - no cache
+    <Files "sw.js">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </Files>
+</IfModule>
+
+# Kompresja GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>
+
+# Typy MIME
+<IfModule mod_mime.c>
+    AddType image/avif .avif
+    AddType image/webp .webp
+    AddType image/svg+xml .svg
+    AddType application/json .json
+    AddType application/wasm .wasm
+    AddType font/woff .woff
+    AddType font/woff2 .woff2
+</IfModule>
+
+# Blokada dostępu do wrażliwych plików i plików pomocniczych PHP.
+<FilesMatch "\.(env|log|sql|bak|backup)$">
+    Require all denied
+</FilesMatch>
+<FilesMatch "^(config|functions)\.php$">
+    Require all denied
+</FilesMatch>
+# Kopie źródeł PHP nie mogą zostać podane jako tekst statyczny.
+<FilesMatch "\.php\.(txt|bak|backup|old|orig|save)$">
+    Require all denied
+</FilesMatch>
