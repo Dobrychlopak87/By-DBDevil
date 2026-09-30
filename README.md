@@ -19,6 +19,8 @@ Zrzuty SQL zawierają dane produkcyjne, więc repozytorium GitLab powinno być p
 
 Kandydat stagingowy nakazuje wdrożenie do osobnego katalogu FTP, smoke test, drugą kopię zapasową i dopiero potem przełączenie produkcji. Główna instrukcja znajduje się w [`pliki/staging-66600-20260923/DEPLOYMENT-RUNBOOK.md`](pliki/staging-66600-20260923/DEPLOYMENT-RUNBOOK.md).
 
+Szczegółowa instrukcja migracji i odtwarzania baz danych znajduje się w [`docs/MIGRACJA-BAZY-DANYCH.md`](docs/MIGRACJA-BAZY-DANYCH.md).
+
 Przed wdrożeniem sprawdź wymagania serwera w `SERVER-REQUIREMENTS.md` oraz checklisty release/rollback. Nie wykonuj przełączenia produkcji bez potwierdzonego rollbacku.
 
 ## Bazy danych
